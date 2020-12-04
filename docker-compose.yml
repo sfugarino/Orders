@@ -1,0 +1,28 @@
+version: "3.6"
+services:
+    rabbitmq:
+        container_name: rabbitmq
+        ports:
+            - 5672:5672
+            - 15672:15672
+        environment:
+            - RABBITMQ_DEFAULT_USER=user
+            - RABBITMQ_DEFAULT_PASS=password        
+        image: rabbitmq:3-management
+    orderapi:
+        container_name: orderapi
+        ports:
+            - 8000:80
+            - 8001:443       
+        build:
+            context: ./src/Api
+        restart: on-failure        
+        depends_on:
+            - rabbitmq
+    orderservice:
+        container_name: orderservice   
+        build:
+            context: ./src/OrderService
+        restart: on-failure        
+        depends_on:
+            - rabbitmq
