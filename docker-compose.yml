@@ -15,14 +15,14 @@ services:
             - 8000:80
             - 8001:443       
         build:
-            context: ./src/Api
+            context: ./src/OrderSystem.Api
         restart: on-failure        
         depends_on:
             - rabbitmq
     orderservice:
         container_name: orderservice   
         build:
-            context: ./src/OrderService
+            context: ./src/OrderSystem.Service
         restart: on-failure        
         depends_on:
             - rabbitmq
