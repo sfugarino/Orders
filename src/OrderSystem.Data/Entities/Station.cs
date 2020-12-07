@@ -9,13 +9,12 @@ namespace OrderSystem.Data.Entities
     /// <summary>
     /// Cooking stations
     /// </summary>
-    /// <see cref="https://kamikoto.com/blogs/fundamentals/cooking-stations-explained-understanding-a-gourmet-kitchen"/>
-    public enum Station
+     public enum Station
     {
-        Saucier, // sauce chef
-        Poissonnier, // fish seafood
-        Rotisseur, // meat chef
-        Entremetier, // vegetable ched
-        Pâtissier // pastry chef
+        Fries, 
+        Grill, 
+        Salad, 
+        Desert, 
+        Drink 
     }
 }
