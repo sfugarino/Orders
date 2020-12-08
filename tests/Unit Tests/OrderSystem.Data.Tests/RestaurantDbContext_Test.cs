@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace Data_Tests
+namespace OrderSystem.Data.Tests
 {
     public class RestaurantDbContext_Test : BaseTest
     {

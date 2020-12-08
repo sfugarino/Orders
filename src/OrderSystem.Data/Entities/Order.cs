@@ -1,17 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
+    [Table("Order")]
     public class Order
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
-         public ICollection<OrderItem> Items { get; set; }
+        public ICollection<OrderItem> Items { get; set; }
+
+        [ForeignKey("Employee")]
+        public int ServerId { get; set; }
+
+        [Required]
+        public Employee Server { get; set; }
+
+        [DefaultValue(OrderStatus.Processing)]
+        public OrderStatus Status { get; set; }
     }
 }

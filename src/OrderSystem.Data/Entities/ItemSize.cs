@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-    public enum MenuType
+    public enum ItemSize
     {
-        Breakfast,
-        Lunch,
-        Dinner
-    }
-
-    public class Menu
-    {
+        Small,
+        Medium,
+        Large
     }
 }

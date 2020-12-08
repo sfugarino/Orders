@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-    public enum Station
+    public enum OrderStatus
     {
-        Grill,
-        Salad,
-        Fry,
-        Desert,
-        Drink
+        Processing,
+        Ready,
+        Delivered
     }
 }

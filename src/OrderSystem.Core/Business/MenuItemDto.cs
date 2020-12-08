@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Core.Business
 {
-    public class MenuItem
+    public class MenuItemDto
     {
         public Guid MenuId { get; set; }
         public string Name { get; set; }

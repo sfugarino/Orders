@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using OrderSystem.Data.Entities;
 
-namespace Data_Tests
+namespace OrderSystem.Data.Tests
 {
     public class Order_Tests : BaseTest
     {
@@ -19,22 +19,28 @@ namespace Data_Tests
         [Fact]
         public void AddedOrderShouldGetGeneratedId()
         {
+            int expected = GetLastOrderId() + 1;
+
             var newOrder = new Order();
+            newOrder.ServerId = 1;
             DbContext.Orders.Add(newOrder);
             DbContext.SaveChanges();
 
-            Assert.NotEqual(Guid.Empty, newOrder.Id);
+            Assert.Equal(expected, newOrder.Id);
         }
 
         [Fact]
         public void AddedOrderShouldGetPersisted()
         {
+            int expected = GetLastOrderId() + 1;
+
             var newOrder = new Order();
+            newOrder.ServerId = 1;
             DbContext.Orders.Add(newOrder);
             DbContext.SaveChanges();
 
             Assert.Equal(newOrder, DbContext.Orders.Find(newOrder.Id));
-            Assert.Equal(1, DbContext.Orders.Count());
+            Assert.Equal(expected, DbContext.Orders.Count());
         }
     }
 }

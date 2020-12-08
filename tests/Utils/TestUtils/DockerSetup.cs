@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -13,33 +14,12 @@ namespace TestUtils
         private readonly DockerClient _dockerClient;
 
         private string _containerId;
-        private readonly string _containerImageUri;
-        private IDictionary<string, EmptyStruct> _exposedPorts = new Dictionary<string, EmptyStruct>();
-        private IDictionary<string, IList<PortBinding>> _portBindings = new Dictionary<string, IList<PortBinding>>();
-        private IList<string> _enviromentVarables;
-        public DockerSetup(string containerImageUri, int[] exposedPorts, 
-            Tuple<int, int>[] portBindings, IList<string> enviromentVarables)
+        private ContainerConfiguration _containerConfiguration; 
+
+        public DockerSetup(ContainerConfiguration containerConfiguration)
         {
-            _dockerClient = new DockerClientConfiguration(new Uri(DockerApiUri())).CreateClient();
-            _containerImageUri = containerImageUri;
-            
-            if (exposedPorts != null)
-            {
-                foreach(int port in exposedPorts)
-                {
-                    _exposedPorts.Add(port.ToString(), default(EmptyStruct));
-                }
-
-            }
-
-            if(portBindings != null)
-            {
-                foreach(var tuple in portBindings)
-                {
-                    _portBindings.Add(tuple.Item1.ToString(), new List<PortBinding> { new PortBinding { HostPort = tuple.Item2.ToString() } });
-                }
-            }
-            _enviromentVarables = enviromentVarables;
+            _dockerClient = new DockerClientConfiguration(new Uri(DockerApiUri()), null, new TimeSpan(0, 2, 0)).CreateClient();
+            _containerConfiguration = containerConfiguration;
         }
 
         public async Task InitializeAsync()
@@ -70,34 +50,34 @@ namespace TestUtils
 
         private async Task PullImage()
         {
+            if (_containerConfiguration == null || _containerConfiguration.CreateContainerParameters == null)
+            {
+                throw new ArgumentNullException("Image create parameters can not be null");
+            }
+
             await _dockerClient.Images
-                .CreateImageAsync(new ImagesCreateParameters
-                {
-                    FromImage = _containerImageUri,
-                    Tag = "latest"
-                },
+                .CreateImageAsync(_containerConfiguration.ImagesCreateParameters,
                     new AuthConfig(),
                     new Progress<JSONMessage>());
         }
 
         private async Task StartContainer()
         {
-            var response = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+            if(_containerConfiguration == null || _containerConfiguration.CreateContainerParameters == null)
             {
-                Image = _containerImageUri,
-                ExposedPorts = _exposedPorts,
-                HostConfig = new HostConfig
-                {
-                    PortBindings = _portBindings,
-                    PublishAllPorts = true,
+                throw new ArgumentNullException("Create container parameters can not be null");
+            }
 
-                },
-                Env = _enviromentVarables
-            });
+            var response = await _dockerClient.Containers.CreateContainerAsync(_containerConfiguration.CreateContainerParameters);
 
             _containerId = response.ID;
 
-            await _dockerClient.Containers.StartContainerAsync(_containerId, null);
+            bool success = await _dockerClient.Containers.StartContainerAsync(_containerId, null);
+
+            // this does not work
+            // await _dockerClient.Containers.WaitContainerAsync(_containerId, cancellationToken.Token);
+
+            await Task.Delay(10000);
         }
 
         public async Task DisposeAsync()

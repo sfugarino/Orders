@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 using Xunit;
 using OrderSystem.Data.Entities;
 
-namespace Data_Tests
+namespace OrderSystem.Data.Tests
 {
     public class OrderItem_Tests : BaseTest
     {
         readonly Order _order = new Order();
         public OrderItem_Tests() : base() 
         {
+            _order.ServerId = 1;
             DbContext.Orders.Add(_order);
+            
             DbContext.SaveChanges();
         }
 
@@ -26,37 +28,46 @@ namespace Data_Tests
         [Fact]
         public void AddedOrderItemShouldGetGeneratedId()
         {
+            int expected = GetLastOrderItemId() + 1;
             var newOrderItem = new OrderItem();
             newOrderItem.OrderId = _order.Id;
+            newOrderItem.MenuItemId = GetLastMenuItemId();
             DbContext.OrderItems.Add(newOrderItem);
             DbContext.SaveChanges();
 
-            Assert.NotEqual(Guid.Empty, newOrderItem.Id);
+           Assert.Equal(expected, newOrderItem.Id);
         }
 
         [Fact]
         public void AddedOrderItemShouldGetPersisted()
         {
+            int orderId = GetLastOrderId();
+            int expected = GetLastOrderItemId() + 1;
+
             var newOrderItem = new OrderItem();
             newOrderItem.OrderId = _order.Id;
+            newOrderItem.MenuItemId = GetLastMenuItemId();
             DbContext.OrderItems.Add(newOrderItem);
             DbContext.SaveChanges();
 
             Assert.Equal(newOrderItem, DbContext.OrderItems.Find(newOrderItem.Id));
-            Assert.Equal(1, DbContext.Orders.Count());
+            Assert.Equal(expected, DbContext.Orders.Count());
         }
 
         [Fact]
         public void OrderShouldContainOrderItem()
         {
+            int expected = GetLastOrderItemId() + 1;
+
             var newOrderItem = new OrderItem();
             newOrderItem.OrderId = _order.Id;
+            newOrderItem.MenuItemId = GetLastMenuItemId();
             DbContext.OrderItems.Add(newOrderItem);
             DbContext.SaveChanges();
 
             var orderItems = DbContext.OrderItems.Where(o => o.OrderId == _order.Id);
-            Assert.Equal(1, orderItems.Count());
-            Assert.Equal(newOrderItem.Id, orderItems.First().Id);
+            Assert.Equal(expected, orderItems.Count());
+            Assert.Equal(expected, newOrderItem.Id);
         }
     }
 }

@@ -10,22 +10,25 @@ using System.Text.Json.Serialization;
 
 namespace OrderSystem.Core
 {
-    public class RabbitMQChannelAdapter : IDisposable
+    public class OrderQueueChannelAdapter : IDisposable
     {
         readonly IConnection _connection = null;
         readonly IModel _channel = null;
 
         private bool isDisposed;
-        public RabbitMQChannelAdapter(string hostName)
+        public OrderQueueChannelAdapter(string hostName)
         {
             var factory = new ConnectionFactory() { HostName = "hostName" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: "orders",
-                                    type: "direct");
+            _channel.QueueDeclare(queue: "order_queue",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
         }
 
-        ~RabbitMQChannelAdapter()
+        ~OrderQueueChannelAdapter()
         {
             // Finalizer calls Dispose(false)
             Dispose(false);
@@ -33,16 +36,18 @@ namespace OrderSystem.Core
 
         public void Send(Order order)
         {
-            foreach (var item in order.Items)
-            {
-                var body = JsonSerializer.Serialize(item);
-                byte[] bytes = Encoding.ASCII.GetBytes(body);
-                _channel.BasicPublish(exchange: "orders-items",
-                                     routingKey: item.Station.ToString(),
-                                     true,
-                                     basicProperties: null,
-                                     body: bytes.AsMemory());
-            }
+
+            var body = JsonSerializer.Serialize(order);
+            byte[] bytes = Encoding.ASCII.GetBytes(body);
+            var properties = _channel.CreateBasicProperties();
+            properties.Persistent = true;
+
+            _channel.BasicPublish(exchange: "",
+                                    routingKey: "order_queue",
+                                    true,
+                                    basicProperties: properties,
+                                    body: bytes.AsMemory());
+ 
         }
 
         public void Dispose()

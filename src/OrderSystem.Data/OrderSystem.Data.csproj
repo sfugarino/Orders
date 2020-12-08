@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\OrderSystem.Core.csproj" />
+    <ProjectReference Include="..\OrderSystem.Core\OrderSystem.Core.csproj" />
   </ItemGroup>
 
 </Project>

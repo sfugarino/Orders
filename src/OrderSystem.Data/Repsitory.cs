@@ -21,6 +21,12 @@ namespace OrderSystem.Data
         {
             return table.ToList();
         }
+
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await table.ToListAsync();
+        }
+
         public T GetById(object id)
         {
             return table.Find(id);

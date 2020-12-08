@@ -8,23 +8,19 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-    [Table("MenuItem")]
-    public class MenuItem
+    [Table("Employee")]
+    public class Employee
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
-        [ForeignKey("MenuItem")]
-        public int? Parent { get; set; }
-
-        public Station Station { get; set; }
-
-        public virtual ICollection<MenuItem> MenuItems { get; set; }
+        public string MiddleName { get; set; }
 
         [Required]
-        public decimal Price { get; set; }
+        public string LastName { get; set; }
+
     }
 }

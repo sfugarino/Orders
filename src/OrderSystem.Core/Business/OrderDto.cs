@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Core.Business
 {
-    public class Order
+    public class OrderDto
     {
-        public IList<MenuItem> MenuItems { get; set; }
+        public IList<MenuItemDto> MenuItems { get; set; }
         public Guid ServerId { get; set; }
         public int Table { get; set; }
 
         public DateTime ReceivedAt { get; private set; }
 
-        public Order()
+        public OrderDto()
         {
-            MenuItems = new List<MenuItem>();
+            MenuItems = new List<MenuItemDto>();
             ReceivedAt = DateTime.Now;
         }
 
-        public Order(Guid serverId, int table)
+        public OrderDto(Guid serverId, int table)
         {
-            MenuItems = new List<MenuItem>();
+            MenuItems = new List<MenuItemDto>();
             Table = table;
             ReceivedAt = DateTime.Now;
         }
