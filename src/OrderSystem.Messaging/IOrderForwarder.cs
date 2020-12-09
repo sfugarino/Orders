@@ -1,12 +1,15 @@
-﻿using System;
+﻿using OrderSystem.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    interface IOrderForwarder
+    public interface IOrderForwarder
     {
+        Task ForwardAsync(Order order, CancellationToken cancellationToken = default);
     }
 }

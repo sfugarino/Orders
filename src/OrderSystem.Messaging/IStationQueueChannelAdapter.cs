@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    public interface IMessageReceiver: IDisposable
+    public interface IStationQueueChannelAdapter: IChannelAdapter
     {
-        void Start();
-        event EventHandler<OrderReceivedEventArgs> OnOrderReceived;
     }
 }

@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    public class OrderForwarder
+    public class OrderForwarder : IOrderForwarder
     {
         private readonly ChannelWriter<OrderItem> _writer;
         private readonly ILogger<OrderForwarder> _logger;
 
-        public OrderForwarder(ChannelWriter<OrderItem> writer, ILogger<OrderForwarder> logger)
+        public OrderForwarder(ILogger<OrderForwarder> logger, ChannelWriter<OrderItem> writer)
         {
             _writer = writer;
             _logger = logger;

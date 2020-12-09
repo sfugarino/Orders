@@ -10,17 +10,16 @@ using System.Text.Json.Serialization;
 
 namespace OrderSystem.Messaging
 {
-    public class OrderQueueChannelAdapter : IChannelAdapter
+    public class OrderQueueChannelAdapter : IOrderQueueChannelAdapter
     {
-        readonly IConnection _connection = null;
+        readonly IRabbitMQConnection _connection = null;
         readonly IModel _channel = null;
 
         private bool isDisposed;
-        public OrderQueueChannelAdapter(string hostname)
+        public OrderQueueChannelAdapter(IRabbitMQConnection connection)
         {
-            var factory = new ConnectionFactory() { HostName = hostname };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            _connection = connection;
+            _channel = _connection.CreateChannel();
             _channel.QueueDeclare(queue: "order_queue",
                                     durable: true,
                                     exclusive: false,
@@ -62,15 +61,7 @@ namespace OrderSystem.Messaging
 
             if (disposing)
             {
-                if (_channel != null)
-                {
-                    _channel.Dispose();
-                }
-
-                if (_connection != null)
-                {
-                    _connection.Dispose();
-                }
+                _channel?.Dispose();
             }
 
             isDisposed = true;

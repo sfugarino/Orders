@@ -10,22 +10,21 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    public class StationChannelAdapter : IChannelAdapter
+    public class StationOueueChannelAdapter : IStationQueueChannelAdapter
     {
-        readonly IConnection _connection = null;
+        readonly IRabbitMQConnection _connection = null;
         readonly IModel _channel = null;
 
         private bool isDisposed;
-        public StationChannelAdapter(string hostName)
+        public StationOueueChannelAdapter(IRabbitMQConnection connection)
         {
-            var factory = new ConnectionFactory() { HostName = "hostName" };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            _connection = connection;
+            _channel = _connection.CreateChannel();
             _channel.ExchangeDeclare(exchange: "order_items",
                                     type: "direct");
         }
 
-        ~StationChannelAdapter()
+        ~StationOueueChannelAdapter()
         {
             // Finalizer calls Dispose(false)
             Dispose(false);
@@ -60,7 +59,6 @@ namespace OrderSystem.Messaging
             if (disposing)
             {
                 _channel?.Dispose();
-                _connection?.Dispose();
             }
 
             isDisposed = true;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderSystem.Data;
 using OrderSystem.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace OrderSystem.Messaging
         private readonly ILogger<OrderConsumer> _logger;
         private readonly int _instanceId;
         private readonly ChannelReader<Order> _reader;
+        private IRepository<Order> _repository;
 
-        public OrderConsumer(int instanceId, ILogger<OrderConsumer> logger, ChannelReader<Order> reader)
+        public OrderConsumer(int instanceId, ILogger<OrderConsumer> logger, ChannelReader<Order> reader, IRepository<Order> repository)
         {
             _instanceId = instanceId;
             _logger = logger;
             _reader = reader;
+            _repository = repository;
         }
 
         public async Task BeginConsumeAsync(CancellationToken cancellationToken = default)

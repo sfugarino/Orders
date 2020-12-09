@@ -14,25 +14,25 @@ namespace OrderSystem.Messaging
     public class BackgroundWorker : BackgroundService
     {
         private readonly ILogger<BackgroundWorker> _logger;
-        private readonly IMessageReceiver _orderReceiver;
-        private readonly IChannelAdapter _channelAdapter;
+        private readonly IOrderReceiver _orderReceiver;
+        private readonly IOrderForwarder _orderForwarder;
         private readonly IEnumerable<IOrderConsumer> _consumers;
 
-        public BackgroundWorker(IEnumerable<IOrderConsumer> consumers, ILogger<BackgroundWorker> logger, IMessageReceiver orderReceiver, IChannelAdapter channelAdapter)
+        public BackgroundWorker(IEnumerable<IOrderConsumer> consumers, ILogger<BackgroundWorker> logger, IOrderReceiver orderReceiver, IOrderForwarder orderForwarder)
         {
             _logger = logger;
             _orderReceiver = orderReceiver;
-            _channelAdapter = channelAdapter;
+            _orderForwarder = orderForwarder;
             _consumers = consumers;
 
             _orderReceiver.OnOrderReceived += _orderReceiver_OnOrderReceived;
 
         }
 
-        private void _orderReceiver_OnOrderReceived(object sender, OrderReceivedEventArgs e)
+        private async void _orderReceiver_OnOrderReceived(object sender, OrderReceivedEventArgs e)
         {
             _logger.LogInformation($"Order { e.Order.Id } received");
-            _channelAdapter.Send(e.Order);
+            await _orderForwarder.ForwardAsync(e.Order);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

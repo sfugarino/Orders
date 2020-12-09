@@ -10,12 +10,11 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    public class OrderReceiver: IMessageReceiver
+    public class OrderReceiver: IOrderReceiver
     {
         private bool isDisposed;
         private IConnection _connection = null;
         private IModel _channel = null;
-        private EventingBasicConsumer _consumer;
 
         public event EventHandler<OrderReceivedEventArgs> OnOrderReceived;
 
@@ -25,17 +24,20 @@ namespace OrderSystem.Messaging
             _connection = factory.CreateConnection();
         }
 
-        private void _consumer_Received(object sender, BasicDeliverEventArgs e)
+        private Task Consumer_Received(object sender, BasicDeliverEventArgs e)
         {
             var body = e.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
             var order = JsonSerializer.Deserialize<Order>(message);
             Console.WriteLine(" [x] Received Order {0}", order.Id);
 
-            if(OnOrderReceived != null)
+            return Task.Run(() =>
             {
-                OnOrderReceived(this, new OrderReceivedEventArgs { Order = order });
-            }
+                if (OnOrderReceived != null)
+                {
+                    OnOrderReceived(this, new OrderReceivedEventArgs { Order = order });
+                }
+            });
         }
 
         private void InitChannel()
@@ -59,7 +61,7 @@ namespace OrderSystem.Messaging
         private void InitSubscription()
         {
             var consumer = new AsyncEventingBasicConsumer(_channel);
-            _consumer.Received += _consumer_Received;
+            consumer.Received += Consumer_Received;
         }
 
         public void Start()
