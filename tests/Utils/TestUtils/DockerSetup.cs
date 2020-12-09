@@ -74,9 +74,9 @@ namespace TestUtils
 
             bool success = await _dockerClient.Containers.StartContainerAsync(_containerId, null);
 
+            // Give container enough time to start
             // this does not work
             // await _dockerClient.Containers.WaitContainerAsync(_containerId, cancellationToken.Token);
-
             await Task.Delay(10000);
         }
 

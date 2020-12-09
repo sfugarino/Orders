@@ -8,17 +8,17 @@ using RabbitMQ.Client;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OrderSystem.Core
+namespace OrderSystem.Messaging
 {
-    public class OrderQueueChannelAdapter : IDisposable
+    public class OrderQueueChannelAdapter : IChannelAdapter
     {
         readonly IConnection _connection = null;
         readonly IModel _channel = null;
 
         private bool isDisposed;
-        public OrderQueueChannelAdapter(string hostName)
+        public OrderQueueChannelAdapter(string hostname)
         {
-            var factory = new ConnectionFactory() { HostName = "hostName" };
+            var factory = new ConnectionFactory() { HostName = hostname };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: "order_queue",
@@ -38,7 +38,7 @@ namespace OrderSystem.Core
         {
 
             var body = JsonSerializer.Serialize(order);
-            byte[] bytes = Encoding.ASCII.GetBytes(body);
+            byte[] bytes = Encoding.UTF8.GetBytes(body);
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OrderSystem.Data;
+using OrderSystem.Messaging;
 
 namespace OrderSystem.Api
 {
@@ -28,12 +29,20 @@ namespace OrderSystem.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<RestaurantDbContext>(opt => opt.UseSqlite("DataSource=:memory:"));
+            
+
+            services.AddDbContext<RestaurantDbContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("restaurant")));
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IChannelAdapter>(_ => new OrderQueueChannelAdapter(Configuration["RabbitMQHost"]));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OrderSystem.Api", Version = "v1" });
             });
+
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

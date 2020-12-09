@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +32,42 @@ namespace OrderSystem.Data
         {
             return table.Find(id);
         }
+
+        public async ValueTask<T> GetByIdAsync(object id)
+        {
+            return await table.FindAsync(id);
+        }
+
         public void Insert(T obj)
         {
             table.Add(obj);
         }
+
+        public async ValueTask<EntityEntry<T>> InsertAsync(T obj)
+        {
+           return await table.AddAsync(obj);
+        }
+
         public void Update(T obj)
         {
             table.Attach(obj);
             _context.Entry(obj).State = EntityState.Modified;
         }
+
         public void Delete(object id)
         {
             T existing = table.Find(id);
             table.Remove(existing);
         }
+
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public async Task<int> SaveAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }

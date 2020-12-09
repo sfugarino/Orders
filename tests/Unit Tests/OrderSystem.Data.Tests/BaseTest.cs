@@ -21,7 +21,6 @@ namespace OrderSystem.Data.Tests
                     .UseSqlite(_connection)
                     .Options;
             DbContext = new RestaurantDbContext(options);
-            DbContext.Database.EnsureCreated();
         }
 
         public void Dispose()

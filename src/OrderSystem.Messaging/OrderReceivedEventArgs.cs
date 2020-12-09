@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    public interface IChannelAdapter: IDisposable
+    public class OrderReceivedEventArgs : EventArgs
     {
-        public void Send(Order order);
+        public Order Order { get; set; }
     }
 }

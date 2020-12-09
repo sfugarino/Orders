@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-    [Table("OrderItem")]
+    [Table("OrderItems")]
     public class OrderItem
     {
         [Key]

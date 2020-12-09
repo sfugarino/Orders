@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-    [Table("MenuItem")]
+    [Table("MenuItems")]
     public class MenuItem
     {
         [Key]

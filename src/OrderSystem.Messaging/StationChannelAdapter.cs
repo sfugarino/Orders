@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Messaging
 {
-    class StationChannelAdapter
+    public class StationChannelAdapter : IChannelAdapter
     {
         readonly IConnection _connection = null;
         readonly IModel _channel = null;
@@ -36,7 +36,7 @@ namespace OrderSystem.Messaging
             foreach (var item in order.Items)
             {
                 var body = JsonSerializer.Serialize(item);
-                byte[] bytes = Encoding.ASCII.GetBytes(body);
+                byte[] bytes = Encoding.UTF8.GetBytes(body);
 
 
                 _channel.BasicPublish(exchange: "orders_items",
@@ -59,15 +59,8 @@ namespace OrderSystem.Messaging
 
             if (disposing)
             {
-                if (_channel != null)
-                {
-                    _channel.Dispose();
-                }
-
-                if (_connection != null)
-                {
-                    _connection.Dispose();
-                }
+                _channel?.Dispose();
+                _connection?.Dispose();
             }
 
             isDisposed = true;
