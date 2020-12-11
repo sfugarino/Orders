@@ -36,8 +36,29 @@ namespace OrderSystem.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Problem(ex.Message);
+                return StatusCode(500);
+            }
+        }
 
+        [HttpGet]
+        public async Task<ActionResult<Order>> Get(int id)
+        {
+            try
+            {
+                var order = await _repository.GetByIdAsync(id);
+
+                if(order == null)
+                {
+                    _logger.LogError("Order not found");
+                    return NotFound();
+                }
+
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -55,7 +76,7 @@ namespace OrderSystem.Api.Controllers
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Problem(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -71,7 +92,7 @@ namespace OrderSystem.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Problem(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -87,7 +108,7 @@ namespace OrderSystem.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Problem(ex.Message);
+                return StatusCode(500);
             }
         }
     }

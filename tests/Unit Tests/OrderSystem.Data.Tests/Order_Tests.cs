@@ -11,13 +11,13 @@ namespace OrderSystem.Data.Tests
     public class Order_Tests : BaseTest
     {
         [Fact]
-        public void OrderTableShouldBeCreated()
+        public void Given_Empty_Database_Order_Table_Should_Be_Created()
         {
             Assert.False(DbContext.Orders.Any());
         }
 
         [Fact]
-        public void AddedOrderShouldGetGeneratedId()
+        public void Given_Order_Added_Id_Should_Be_Generated()
         {
             int expected = GetLastOrderId() + 1;
 
@@ -30,7 +30,7 @@ namespace OrderSystem.Data.Tests
         }
 
         [Fact]
-        public void AddedOrderShouldGetPersisted()
+        public void Given_Order_Added_Order_Should_Be_Persisted()
         {
             int expected = GetLastOrderId() + 1;
 

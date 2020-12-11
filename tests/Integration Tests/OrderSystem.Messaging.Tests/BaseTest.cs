@@ -7,8 +7,9 @@ using TestUtils;
 using System.Collections;
 using System.Collections.Generic;
 using Xunit;
+using RabbitMQ.Client;
 
-namespace OrderSystem.Messaging.Tests
+namespace OrderSystem.Messaging.IntegrationTests
 {
     public class BaseTest : DockerSetup
     {

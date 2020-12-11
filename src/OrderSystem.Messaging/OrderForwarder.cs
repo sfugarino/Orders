@@ -26,7 +26,7 @@ namespace OrderSystem.Messaging
             foreach (var item in order.Items)
             { 
                 await _writer.WriteAsync(item, cancellationToken);
-                _logger.LogInformation($"Producer > published message {item.Id} '{item.Station}'");
+                _logger.LogInformation($"Producer > published message {item.Id} '{item.MenuItem.Station}'");
             }
         }
     }

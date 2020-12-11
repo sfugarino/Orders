@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,24 +8,18 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-    [Table("OrderItems")]
-    public class OrderItem
+    public class MenuItem_Size
     {
         [Key]
-        public int Id { get; set; }
-
-        public ItemSize Size { get; set; }
-
-        [ForeignKey("Order")]
-        public int OrderId { get; set; }
-
-        public Order Order { get; set; }
-
         [ForeignKey("MenuItem")]
         public int MenuItemId { get; set; }
         public MenuItem MenuItem { get; set; }
 
-        [DefaultValue(OrderItemStatus.Processing)]
-        public OrderItemStatus Status { get; set; }
+        [Key]
+        [ForeignKey("ItemSize")]
+        public int ItemSizeId { get; set; }
+        public ItemSize ItemSize { get; set; }
+
+        public decimal Price { get; set; }
     }
 }

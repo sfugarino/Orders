@@ -22,14 +22,19 @@ namespace OrderSystem.Messaging
 
         public bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
 
+        public IConnection Connection
+        {
+            get { return _connection; }
+        }
+
         public void Dispose()
         {
             if (_disposed)
                 return;
 
             _disposed = true;
-
-            _connection.Dispose();
+            _connection?.Close();
+            _connection?.Dispose();
         }
 
         private void TryConnect()
@@ -40,7 +45,7 @@ namespace OrderSystem.Messaging
                     return;
 
                 _connection = _connectionFactory.CreateConnection();
-                _connection.ConnectionShutdown += (s, e) => TryConnect();
+                _connection.ConnectionShutdown += (s, e) => Console.WriteLine($"RabbitMQ Connectio shutdown: { e.ReplyText }");
                 _connection.CallbackException += (s, e) => TryConnect();
                 _connection.ConnectionBlocked += (s, e) => TryConnect();
             }

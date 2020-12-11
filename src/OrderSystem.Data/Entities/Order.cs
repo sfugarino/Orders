@@ -15,7 +15,7 @@ namespace OrderSystem.Data.Entities
         [Key]
         public int Id { get; set; }
 
-        public ICollection<OrderItem> Items { get; set; }
+        public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 
         [ForeignKey("Employee")]
         public int ServerId { get; set; }

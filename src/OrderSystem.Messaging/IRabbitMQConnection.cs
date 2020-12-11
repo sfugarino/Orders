@@ -9,6 +9,7 @@ namespace OrderSystem.Messaging
 {
     public interface IRabbitMQConnection : IDisposable
     {
+        IConnection Connection { get; }
         bool IsConnected { get; }
 
         IModel CreateChannel();

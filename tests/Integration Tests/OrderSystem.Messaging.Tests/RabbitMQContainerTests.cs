@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OrderSystem.Messaging.Tests
+namespace OrderSystem.Messaging.IntegrationTests
 {
     public class RabbitMQContainerTests : BaseTest
     {

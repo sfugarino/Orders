@@ -12,6 +12,7 @@ namespace OrderSystem.Data
         IEnumerable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
         T GetById(object id);
+        ValueTask<T> GetByIdAsync(object id);
         void Insert(T obj);
         ValueTask<EntityEntry<T>> InsertAsync(T obj);
         void Update(T obj);

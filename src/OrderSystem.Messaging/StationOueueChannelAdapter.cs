@@ -20,8 +20,11 @@ namespace OrderSystem.Messaging
         {
             _connection = connection;
             _channel = _connection.CreateChannel();
-            _channel.ExchangeDeclare(exchange: "order_items",
-                                    type: "direct");
+            _channel.ExchangeDeclare(exchange: "orders",
+                                    type: "direct",
+                                    durable: true,
+                                    autoDelete: false);
+
         }
 
         ~StationOueueChannelAdapter()
@@ -38,8 +41,8 @@ namespace OrderSystem.Messaging
                 byte[] bytes = Encoding.UTF8.GetBytes(body);
 
 
-                _channel.BasicPublish(exchange: "orders_items",
-                                     routingKey: item.Station.ToString(),
+                _channel.BasicPublish(exchange: "orders",
+                                     routingKey: item.MenuItem.Station.ToString(),
                                      true,
                                      basicProperties: null,
                                      body: bytes.AsMemory());

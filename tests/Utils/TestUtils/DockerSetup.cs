@@ -22,7 +22,7 @@ namespace TestUtils
             _containerConfiguration = containerConfiguration;
         }
 
-        public async Task InitializeAsync()
+        public virtual async Task InitializeAsync()
         {
             await PullImage();
             await StartContainer();
@@ -80,7 +80,7 @@ namespace TestUtils
             await Task.Delay(10000);
         }
 
-        public async Task DisposeAsync()
+        public virtual async Task DisposeAsync()
         {
             if (_containerId != null)
             {

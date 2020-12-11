@@ -17,14 +17,15 @@ namespace OrderSystem.Data.Entities
         [Required]
         public string Name { get; set; }
 
-        [ForeignKey("MenuItem")]
-        public int? Parent { get; set; }
+        [ForeignKey("ParentItem")]
+        public int? ParentId { get; set; }
 
         public Station Station { get; set; }
 
-        public virtual ICollection<MenuItem> MenuItems { get; set; }
+        public virtual ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
 
-        [Required]
-        public decimal Price { get; set; }
+        public virtual ICollection<MenuItem_Size> Sizes { get; set; } = new List<MenuItem_Size>();
+
+
     }
 }

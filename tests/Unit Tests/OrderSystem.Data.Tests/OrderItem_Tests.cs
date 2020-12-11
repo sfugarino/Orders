@@ -10,7 +10,7 @@ namespace OrderSystem.Data.Tests
 {
     public class OrderItem_Tests : BaseTest
     {
-        readonly Order _order = new Order();
+        private Order _order = new Order();
         public OrderItem_Tests() : base() 
         {
             _order.ServerId = 1;
@@ -20,13 +20,13 @@ namespace OrderSystem.Data.Tests
         }
 
         [Fact]
-        public void OrderItemTableShouldBeCreated()
+        public void Given_Empty_Database_Order_Table_Should_Be_Created()
         {
             Assert.False(DbContext.OrderItems.Any());
         }
 
         [Fact]
-        public void AddedOrderItemShouldGetGeneratedId()
+        public void Given_OrderItem_Added_Id_Should_Be_Generated()
         {
             int expected = GetLastOrderItemId() + 1;
             var newOrderItem = new OrderItem();
@@ -39,7 +39,7 @@ namespace OrderSystem.Data.Tests
         }
 
         [Fact]
-        public void AddedOrderItemShouldGetPersisted()
+        public void Given_OrderItem_Added_OrderItem_Should_Be_Persisted()
         {
             int orderId = GetLastOrderId();
             int expected = GetLastOrderItemId() + 1;
@@ -55,19 +55,31 @@ namespace OrderSystem.Data.Tests
         }
 
         [Fact]
-        public void OrderShouldContainOrderItem()
+        public void Given_Order_Added_With_OrderItems_Items_Should_Be_Added_To_OrderItem_Table()
         {
-            int expected = GetLastOrderItemId() + 1;
+            var orderId = _order.Id;
+            var expectedCount = _order.Items.Count() + 1;
 
             var newOrderItem = new OrderItem();
-            newOrderItem.OrderId = _order.Id;
+            newOrderItem.OrderId = orderId;
             newOrderItem.MenuItemId = GetLastMenuItemId();
-            DbContext.OrderItems.Add(newOrderItem);
+
+            _order.Items.Add(newOrderItem);
+            DbContext.Orders.Attach(_order);
             DbContext.SaveChanges();
 
-            var orderItems = DbContext.OrderItems.Where(o => o.OrderId == _order.Id);
-            Assert.Equal(expected, orderItems.Count());
-            Assert.Equal(expected, newOrderItem.Id);
+            _order = DbContext.Orders.First(o => o.Id == orderId);
+
+            var expectedOrderItemId = GetLastOrderItemId();
+
+            var expectedOrderItem = DbContext.OrderItems.FirstOrDefault(i => i.Id == expectedOrderItemId);
+
+            Assert.NotNull(expectedOrderItem);
+            Assert.Equal(expectedCount, _order.Items.Count());
+
+            expectedOrderItem = DbContext.OrderItems.FirstOrDefault(i => i.Id == expectedOrderItemId);
+
+            Assert.NotNull(expectedOrderItem);
         }
     }
 }
